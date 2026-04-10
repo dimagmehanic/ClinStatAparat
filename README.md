@@ -1,2 +1,2 @@
 # ClinStatAparat
-# ClinStatAparat Clinical Biostatistics &amp; Machine Learning Platform
+Clinical Biostatistics Machine Learning Platform
