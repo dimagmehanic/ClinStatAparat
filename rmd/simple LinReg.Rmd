@@ -1,0 +1,81 @@
+# Simple Linear Regression
+```{r}
+library(here)
+library(ayuda)
+library(ggplot2)
+source(here::here("scripts/load_adam.R"))
+```
+
+```{r}
+adlb <- adam$adlb()
+
+UNIQ_PARAMs <- adlb  %>% select(PARCAT1, PARAM, PARAMCD, PARAMN)  %>% unique()
+
+## list unique Parameters
+adlb_wide <- adlb %>%  
+  filter(PARCAT1 == "HEMATOLOGY" & SAFFL == "Y" & ANL01FL == "Y" & AVISITN == 13) %>% 
+  select(USUBJID, AGE, TRT01P, PARAMCD, CHG, BASE, AVAL) %>%
+  pivot_wider(
+    id_cols = c(USUBJID, AGE, TRT01P),
+    names_from = PARAMCD,
+    values_from = c(AVAL, CHG, BASE)
+  )
+
+# pairs(adlb_wide %>% select(CHG_CHOLES, AGE, BASE_CHOLES, AVAL_CHOLES))
+
+# plot CHOLE results by TRT01p as color
+adlb_wide %>% 
+  ggplot(aes(BASE_ALT, CHG_ALT, color = TRT01P)) +
+  geom_point()
+```
+
+```{r}
+adeg <- adam$adeg()
+
+UNIQ_PARAMs <- adeg  %>% select(PARAM, PARAMCD, PARAMN)  %>% unique()
+
+adeg_wide <- adeg %>% 
+  filter(SAFFL == "Y" & ANL01FL == "Y" & AVISITN == 26) %>%
+  select(USUBJID, AGE, TRT01P, PARAMCD, CHG, BASE, AVAL) %>%
+  pivot_wider(
+    id_cols = c(USUBJID, AGE, TRT01P),
+    names_from = PARAMCD,
+    values_from = c(AVAL, CHG, BASE)
+  )
+
+pairs(adeg_wide %>% select(starts_with("AVAL")))
+
+# plot HR results by TRT01p as color
+adeg_wide %>% 
+  ggplot(aes(AVAL_HR, AVAL_RRR, color = TRT01P)) +
+  geom_point()
+```
+
+```{r}
+advs <- adam$advs()
+
+UNIQ_PARAMs <- advs  %>% select(PARAM, PARAMCD, PARAMN)  %>% unique()
+
+advs_wide <- advs %>% 
+  filter(SAFFL == "Y" & ANL01FL == "Y" & DTYPE == "AVERAGE" & AVISITN == 26) %>%
+  select(USUBJID, AGE, TRT01P, PARAMCD, CHG, BASE, AVAL) %>%
+  pivot_wider(
+    id_cols = c(USUBJID, AGE, TRT01P),
+    names_from = PARAMCD,
+    values_from = c(AVAL, CHG, BASE)
+  )
+
+pairs(advs_wide %>% select(starts_with("AVAL")))
+
+## join ADVS and ADEG by usubjid, AGE and TRT01p
+
+egvs <- adlb_wide %>% inner_join(advs_wide, by=c("USUBJID"))
+#   inner_join(adeg_wide, by=c("USUBJID"))
+
+adsl <- adam$adsl()  %>% select(USUBJID) %>% count()
+pairs(egvs %>% select(starts_with("AVAL")))
+# plot HR results by TRT01p as color
+adeg_wide %>% 
+  ggplot(aes(AVAL_HR, AVAL_RRR, color = TRT01P)) +
+  geom_point()
+```

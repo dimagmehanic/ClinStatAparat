@@ -1,4 +1,4 @@
-library(pharmaverseadam)
+
 
 dataset_names <- data(package = "pharmaverseadam")$results[, "Item"]
 
