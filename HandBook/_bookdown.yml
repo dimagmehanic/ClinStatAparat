@@ -1,0 +1,12 @@
+book_filename: "HandBook"
+delete_merged_file: true
+output_dir: "docs"
+
+rmd_files:
+  - index.Rmd
+  - 01-Descreptive-Statistics.Rmd
+  - 02-Simple-Linear-Regression.Rmd
+
+language:
+  ui:
+    chapter_name: "Chapter "

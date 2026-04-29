@@ -1,0 +1,28 @@
+---
+title: "My Statistical HandBook"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+---
+
+# Welcome
+
+**HandBook** is a structured guide for clinical statistics, programming, and data science applications.
+
+## 🚀 How to use this book
+
+Each chapter contains:
+- Concept explanations
+- R code examples
+- Practical clinical applications
+
+---
+
+## 👨‍💻 About
+
+Built for:
+- SAS/R programmers
+- Data scientists in pharma
+
+---
+
+> “Good statistics is not about formulas — it's about interpretation.”
