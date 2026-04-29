@@ -1,5 +1,5 @@
 ---
-title: "My Statistical HandBook"
+title: "Statistical HandBook"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 ---
