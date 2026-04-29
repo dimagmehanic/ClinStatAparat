@@ -1,0 +1,269 @@
+
+# 📊 Descriptive Statistics
+
+```{r, echo=FALSE, include=FALSE}
+library(here)
+library(ayuda)
+library(ggplot2) 
+source(here::here("R/init.R"))
+```
+
+```{r, echo=FALSE}
+#Dataset prep
+adlb <- adam$adlb() %>% 
+  filter(SAFFL == "Y" &  AVISITN==9999 & ANL01FL == "Y" & !(PARAMCD %in% c("COLOR"))) %>%  # nolint
+  select(USUBJID, AGE, TRT01P, PARCAT1, PARAM, PARAMCD, PARAMN, AVISIT, AVISITN, AVAL, CHG, BASE) # nolint
+
+UNIQ_PARAMs <- adlb  %>% select(PARCAT1, PARAM, PARAMCD, PARAMN)  %>% unique()
+
+## List unique Parameters
+adlb_wide <- adlb %>%
+  select(USUBJID, AGE, TRT01P, PARAMCD, CHG, BASE, AVAL, AVISIT) %>%
+  pivot_wider(
+    id_cols = c(USUBJID, AGE, TRT01P, AVISIT),
+    names_from = PARAMCD,
+    values_from = c(AVAL, CHG, BASE)
+  )
+```
+
+## 1. Sample Size
+- **Definition:** Number of observations in the dataset  
+- **Formula:**
+$$
+n
+$$
+
+<style>
+.container {
+  display: flex;
+  gap: 20px; /* increase spacing */
+}
+.box {
+  flex: 1;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+</style>
+
+<div class="container">
+
+<div class="box">
+
+##### Variable BASE_CA
+```{r}
+get_obs(adlb_wide$BASE_CA) %>% df2print()
+```
+</div> 
+
+<div class="box">
+
+##### Variable AGE
+```{r}
+get_obs(adlb_wide$AGE) %>% df2print()
+```
+</div> </div>
+
+---
+
+## 2. Histogram and Range
+- **Range:** Difference between max and min  
+- **Formula:**
+$$
+\text{Range} = x_{\max} - x_{\min}
+$$
+
+#### Constructing a Histogram (Step-by-Step)
+
+- Find the minimum value $x_{\min}$
+- Find the maximum value $x_{\max}$
+- Choose Number of Classes:
+  - Classes are the groups (bins) used in a histogram.
+
+  - Rule of Thumb (Sturges’ Rule):
+  \[
+  k = 1 + 3.322 \log_{10}(n)
+  \]
+
+  - Where:
+    - \(k\) = number of classes  
+    - \(n\) = number of observations  
+
+    Simple guideline:
+
+    | Sample Size (n) | Number of Classes (k) |
+    |----------------|------------------------|
+    | 10–20          | 4–5                    |
+    | 20–50          | 5–7                    |
+    | 50–100         | 7–10                   |
+    | 100+           | 10–20                  |
+
+
+
+- Compute Class Width:
+  - Formula:
+    \[
+    \text{Class Width} = \frac{\text{Range}}{\text{Number of Classes}}
+    \]
+
+- Create Class Intervals:
+  - No overlapping intervals
+  - Cover all data values
+
+- Calculate Relative Frequency:
+  - Formula:
+  \[
+  \text{Relative Frequency} = \frac{f}{n}
+  \]
+
+- Draw the Histogram
+
+<div class="container">
+
+  <div class="box">
+
+##### Variable BASE_CA
+  ```{r}
+  get_range(adlb_wide$BASE_CA) %>% df2print()
+  hist(adlb_wide$BASE_CA)
+  ```
+  </div> 
+
+  <div class="box">
+
+##### Variable AGE
+  ```{r}
+  get_range(adlb_wide$AGE) %>% df2print()
+  hist(adlb_wide$AGE)
+  ```
+  </div>
+</div>
+
+---
+
+## 3. Central Tendency (average, median, mode)
+#### - Average (mean)
+
+  - **Definition:** Sum of all values divided by number of observations  
+  - **Formula:**
+$$
+\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i
+$$
+
+#### Median
+- **Definition:** Middle value when data is sorted  
+
+- If \( n \) is odd:
+$$
+\text{Median} = x_{\frac{n+1}{2}}
+$$
+
+- If \( n \) is even:
+$$
+\text{Median} = \frac{x_{\frac{n}{2}} + x_{\frac{n}{2}+1}}{2}
+$$
+
+#### Mode
+- **Definition:** Most frequently occurring value
+
+---
+
+### 5. Variance
+
+#### Population Variance
+$$
+\sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2
+$$
+
+#### Sample Variance
+$$
+s^2 = \frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar{x})^2
+$$
+
+---
+
+### 6. Standard Deviation
+
+#### Population
+$$
+\sigma = \sqrt{\frac{1}{N} \sum (x_i - \mu)^2}
+$$
+
+#### Sample
+$$
+s = \sqrt{s^2}
+$$
+
+---
+
+## 8. Quartiles
+- **Definition:** Divide data into 4 equal parts  
+
+- Q1: 25th percentile  
+- Q2: Median (50th percentile)  
+- Q3: 75th percentile  
+
+---
+
+## 9. Interquartile Range (IQR)
+- **Definition:** Spread of middle 50%  
+- **Formula:**
+$$
+IQR = Q3 - Q1
+$$
+
+---
+
+## 10. Coefficient of Variation
+- **Definition:** Relative variability  
+- **Formula:**
+$$
+CV = \frac{s}{\bar{x}} \times 100\%
+$$
+
+---
+
+## 11. Skewness
+- **Definition:** Measure of asymmetry  
+- **Formula:**
+$$
+\text{Skewness} = \frac{1}{n} \sum \left(\frac{x_i - \bar{x}}{s}\right)^3
+$$
+
+---
+
+## 12. Kurtosis
+- **Definition:** Measure of tail heaviness  
+- **Formula:**
+$$
+\text{Kurtosis} = \frac{1}{n} \sum \left(\frac{x_i - \bar{x}}{s}\right)^4
+$$
+
+---
+
+## 13. Covariance
+- **Definition:** Joint variability of two variables  
+- **Formula:**
+$$
+\text{Cov}(X,Y) = \frac{1}{n-1} \sum (x_i - \bar{x})(y_i - \bar{y})
+$$
+
+---
+
+## 14. Correlation (Pearson)
+- **Definition:** Standardized covariance  
+- **Formula:**
+$$
+r = \frac{\text{Cov}(X,Y)}{s_x s_y}
+$$
+
+---
+
+## 15. Z-score (Standard Score)
+- **Definition:** Number of standard deviations from mean  
+- **Formula:**
+$$
+z = \frac{x - \bar{x}}{s}
+$$
+
+---

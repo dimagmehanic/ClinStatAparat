@@ -1,0 +1,12 @@
+/* style.css */
+.book .book-summary {
+  font-size: 14px;
+}
+
+.book .book-summary ul.summary li a {
+  font-weight: 500;
+}
+
+.book .book-summary ul.summary li.active > a {
+  color: #2c7be5;
+}

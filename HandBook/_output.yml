@@ -1,0 +1,11 @@
+bookdown::gitbook:
+  css: style.css
+  toc_depth: 3
+  split_by: chapter
+
+  config:
+    toc:
+      collapse: section   # collapsible sidebar sections
+      scroll_highlight: true
+      before: |
+        <li><strong>HandBook</strong></li>

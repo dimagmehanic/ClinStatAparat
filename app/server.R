@@ -6,4 +6,6 @@ server <- function(input, output, session) {
   })
 
   output$table <- renderDataTable(data(), options = list(pageLength = 25))
+
+  session$onSessionEnded(function() { stopApp() })
 }
