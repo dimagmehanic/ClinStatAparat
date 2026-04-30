@@ -9,3 +9,9 @@ bookdown::gitbook:
       scroll_highlight: true
       before: |
         <li><strong>HandBook</strong></li>
+        <li><a href="index.html">🏠 Home</a></li>
+      after: |
+        <li><a href="https://github.com/dimagmehanic" target="_blank">🐙 GitHub</a></li>
+        <li><a href="https://linkedin.com/in/dmytro-hasan-29a420a8" target="_blank">💼 LinkedIn</a></li>
+    
+    sharing: null
