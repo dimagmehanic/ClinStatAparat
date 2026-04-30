@@ -1,0 +1,36 @@
+# Simple Linear Regression
+
+```{r, echo=FALSE, include=FALSE}
+library(here)
+library(ayuda)
+library(ggplot2)
+source(here::here("scripts/load_adam.R"))
+source(here::here("R/get_obs.R"))
+source(here::here("R/df2print.R"))
+```
+
+```{r, echo=FALSE}
+#Dataset prep
+adlb <- adam$adlb() %>% 
+  filter(SAFFL == "Y" &  AVISITN==9999 & ANL01FL == "Y" & !(PARAMCD %in% c("COLOR"))) %>%  # nolint
+  select(USUBJID, AGE, TRT01P, PARCAT1, PARAM, PARAMCD, PARAMN, AVISIT, AVISITN, AVAL, CHG, BASE) # nolint
+
+UNIQ_PARAMs <- adlb  %>% select(PARCAT1, PARAM, PARAMCD, PARAMN)  %>% unique()
+
+## List unique Parameters
+adlb_wide <- adlb %>%
+  select(USUBJID, AGE, TRT01P, PARAMCD, CHG, BASE, AVAL, AVISIT) %>%
+  pivot_wider(
+    id_cols = c(USUBJID, AGE, TRT01P, AVISIT),
+    names_from = PARAMCD,
+    values_from = c(AVAL, CHG, BASE)
+  )
+```
+
+```{r, echo=FALSE}
+
+# plot results by TRT01p as color
+adlb_wide %>% 
+  ggplot(aes(BASE_CA, AGE, color = TRT01P)) +
+  geom_point()
+```

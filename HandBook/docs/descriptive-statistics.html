@@ -427,7 +427,7 @@ k = 1 + 3.322 \log_{10}(n)
 </ul>
 </div>
 <div id="median" class="section level4 hasAnchor" number="2.3.0.2">
-<h4><span class="header-section-number">2.3.0.2</span> Median<a href="descriptive-statistics.html#median" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<h4><span class="header-section-number">2.3.0.2</span> - Median<a href="descriptive-statistics.html#median" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><strong>Definition:</strong> Middle value when data is sorted</p></li>
 <li><p>If <span class="math inline">\(n\)</span> is odd:
@@ -441,10 +441,64 @@ k = 1 + 3.322 \log_{10}(n)
 </ul>
 </div>
 <div id="mode" class="section level4 hasAnchor" number="2.3.0.3">
-<h4><span class="header-section-number">2.3.0.3</span> Mode<a href="descriptive-statistics.html#mode" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<h4><span class="header-section-number">2.3.0.3</span> - Mode<a href="descriptive-statistics.html#mode" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><strong>Definition:</strong> Most frequently occurring value</li>
 </ul>
+<div class="container">
+<div id="variable-base_ca-2" class="section level5 hasAnchor box" number="2.3.0.3.1">
+<h5><span class="header-section-number">2.3.0.3.1</span> Variable BASE_CA<a href="descriptive-statistics.html#variable-base_ca-2" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="descriptive-statistics.html#cb7-1" tabindex="-1"></a><span class="fu">get_central</span>(adlb_wide<span class="sc">$</span>BASE_CA) <span class="sc">%&gt;%</span> <span class="fu">df2print</span>() </span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Statistic</th>
+<th align="right">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mean</td>
+<td align="right">2.30234260869565</td>
+</tr>
+<tr class="even">
+<td align="left">Median</td>
+<td align="right">2.2954</td>
+</tr>
+<tr class="odd">
+<td align="left">Mode</td>
+<td align="right">2.2954, 2.32035</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="variable-age-2" class="section level5 hasAnchor box" number="2.3.0.3.2">
+<h5><span class="header-section-number">2.3.0.3.2</span> Variable AGE<a href="descriptive-statistics.html#variable-age-2" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="descriptive-statistics.html#cb8-1" tabindex="-1"></a><span class="fu">get_central</span>(adlb_wide<span class="sc">$</span>AGE) <span class="sc">%&gt;%</span> <span class="fu">df2print</span>()</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Statistic</th>
+<th align="right">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mean</td>
+<td align="right">74.9</td>
+</tr>
+<tr class="even">
+<td align="left">Median</td>
+<td align="right">77</td>
+</tr>
+<tr class="odd">
+<td align="left">Mode</td>
+<td align="right">81</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <hr />
 </div>
 <div id="variance" class="section level3 hasAnchor" number="2.3.1">
@@ -574,7 +628,6 @@ r = \frac{\text{Cov}(X,Y)}{s_x s_y}
 z = \frac{x - \bar{x}}{s}
 \]</span></li>
 </ul>
-<hr />
 
 </div>
 </div>

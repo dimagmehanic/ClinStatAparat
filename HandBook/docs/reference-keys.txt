@@ -13,6 +13,8 @@ central-tendency-average-median-mode
 average-mean
 median
 mode
+variable-base_ca-2
+variable-age-2
 variance
 population-variance
 sample-variance
