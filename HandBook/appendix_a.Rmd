@@ -1,0 +1,53 @@
+# Appendix A: Bessel's Correction {#appendix-a}
+
+```{r, echo=FALSE, include=FALSE}
+library(ayuda)
+library(ggplot2)
+library(patchwork)
+
+### Standard deviation
+pop_sd <- function(vec, n = 0) {
+  return(sqrt(sum((vec - mean(vec))^2) / (length(vec) - n))) # nolint
+}
+
+plotsd <- function(df, title_text) {
+  df %>% ggplot(aes(x = iteration, y = sdd)) +
+    geom_point(color = "blue", size = 2) +
+    labs(x = "Iteration", y = "Standart deviation", title = title_text) +
+    geom_hline(yintercept = std, linetype = "dashed",
+               color = "red", linewidth = 1) +
+    theme_gray() +
+    theme(plot.title = element_text(face = "bold", size = 18, hjust = 0.5))
+}
+```
+
+Given a population of 50,000 random numbers between -1 and 1, we can calculate the standard deviation of the population. 
+```{r}
+set.seed(123)
+pop <- runif(50000, -1, 1)
+std <- pop_sd(pop)
+```
+Then, we can take multiple samples of size 50 from this population and calculate the standard deviation of each sample using different formulas: 
+dividing by n, n-1, and n-2.
+```{r} 
+sds <- map(1:100, ~ mean(sapply(1:1000, function(x) pop_sd(sample(pop, 50), n=0)))) %>% unlist() # nolint
+sds1 <- map(1:100, ~ mean(sapply(1:1000, function(x) pop_sd(sample(pop, 50), n=1)))) %>% unlist() # nolint
+sds2 <- map(1:100, ~ mean(sapply(1:1000, function(x) pop_sd(sample(pop, 50), n=2)))) %>% unlist() # nolint
+```
+Finally, we can visualize the results to see how the choice of denominator affects the estimated standard deviation.
+```{r}
+df <- data.frame(
+  iteration = 1:length(sds),
+  sdd = sds
+)
+df1 <- data.frame(
+  iteration = 1:length(sds1),
+  sdd = sds1
+)
+df2 <- data.frame(
+  iteration = 1:length(sds2),
+  sdd = sds2
+)
+
+plotsd(df, "n") / plotsd(df1, "n-1") / plotsd(df2, "n-2")
+```

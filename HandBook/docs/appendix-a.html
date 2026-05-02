@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 3 Simple Linear Regression | Statistical HandBook</title>
-  <meta name="description" content="Chapter 3 Simple Linear Regression | Statistical HandBook" />
+  <title>Chapter 4 Appendix A: Bessel’s Correction | Statistical HandBook</title>
+  <meta name="description" content="Chapter 4 Appendix A: Bessel’s Correction | Statistical HandBook" />
   <meta name="generator" content="bookdown 0.46 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 3 Simple Linear Regression | Statistical HandBook" />
+  <meta property="og:title" content="Chapter 4 Appendix A: Bessel’s Correction | Statistical HandBook" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 3 Simple Linear Regression | Statistical HandBook" />
+  <meta name="twitter:title" content="Chapter 4 Appendix A: Bessel’s Correction | Statistical HandBook" />
   
   
   
@@ -28,8 +28,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="descriptive-statistics.html"/>
-<link rel="next" href="appendix-a.html"/>
+<link rel="prev" href="simple-linear-regression.html"/>
+
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -182,9 +182,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="simple-linear-regression" class="section level1 hasAnchor" number="3">
-<h1><span class="header-section-number">Chapter 3</span> Simple Linear Regression<a href="simple-linear-regression.html#simple-linear-regression" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><img src="HandBook_files/figure-html/unnamed-chunk-21-1.png" alt="" width="672" /></p>
+<div id="appendix-a" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Appendix A: Bessel’s Correction<a href="appendix-a.html#appendix-a" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Given a population of 50,000 random numbers between -1 and 1, we can calculate the standard deviation of the population.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="appendix-a.html#cb24-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb24-2"><a href="appendix-a.html#cb24-2" tabindex="-1"></a>pop <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">50000</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb24-3"><a href="appendix-a.html#cb24-3" tabindex="-1"></a>std <span class="ot">&lt;-</span> <span class="fu">pop_sd</span>(pop)</span></code></pre></div>
+<p>Then, we can take multiple samples of size 50 from this population and calculate the standard deviation of each sample using different formulas:
+dividing by n, n-1, and n-2.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="appendix-a.html#cb25-1" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>, <span class="cf">function</span>(x) <span class="fu">pop_sd</span>(<span class="fu">sample</span>(pop, <span class="dv">50</span>), <span class="at">n=</span><span class="dv">0</span>)))) <span class="sc">%&gt;%</span> <span class="fu">unlist</span>() <span class="co"># nolint</span></span>
+<span id="cb25-2"><a href="appendix-a.html#cb25-2" tabindex="-1"></a>sds1 <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>, <span class="cf">function</span>(x) <span class="fu">pop_sd</span>(<span class="fu">sample</span>(pop, <span class="dv">50</span>), <span class="at">n=</span><span class="dv">1</span>)))) <span class="sc">%&gt;%</span> <span class="fu">unlist</span>() <span class="co"># nolint</span></span>
+<span id="cb25-3"><a href="appendix-a.html#cb25-3" tabindex="-1"></a>sds2 <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>, <span class="cf">function</span>(x) <span class="fu">pop_sd</span>(<span class="fu">sample</span>(pop, <span class="dv">50</span>), <span class="at">n=</span><span class="dv">2</span>)))) <span class="sc">%&gt;%</span> <span class="fu">unlist</span>() <span class="co"># nolint</span></span></code></pre></div>
+<p>Finally, we can visualize the results to see how the choice of denominator affects the estimated standard deviation.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="appendix-a.html#cb26-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb26-2"><a href="appendix-a.html#cb26-2" tabindex="-1"></a>  <span class="at">iteration =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sds),</span>
+<span id="cb26-3"><a href="appendix-a.html#cb26-3" tabindex="-1"></a>  <span class="at">sdd =</span> sds</span>
+<span id="cb26-4"><a href="appendix-a.html#cb26-4" tabindex="-1"></a>)</span>
+<span id="cb26-5"><a href="appendix-a.html#cb26-5" tabindex="-1"></a>df1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb26-6"><a href="appendix-a.html#cb26-6" tabindex="-1"></a>  <span class="at">iteration =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sds1),</span>
+<span id="cb26-7"><a href="appendix-a.html#cb26-7" tabindex="-1"></a>  <span class="at">sdd =</span> sds1</span>
+<span id="cb26-8"><a href="appendix-a.html#cb26-8" tabindex="-1"></a>)</span>
+<span id="cb26-9"><a href="appendix-a.html#cb26-9" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb26-10"><a href="appendix-a.html#cb26-10" tabindex="-1"></a>  <span class="at">iteration =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sds2),</span>
+<span id="cb26-11"><a href="appendix-a.html#cb26-11" tabindex="-1"></a>  <span class="at">sdd =</span> sds2</span>
+<span id="cb26-12"><a href="appendix-a.html#cb26-12" tabindex="-1"></a>)</span>
+<span id="cb26-13"><a href="appendix-a.html#cb26-13" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="appendix-a.html#cb26-14" tabindex="-1"></a><span class="fu">plotsd</span>(df, <span class="st">&quot;n&quot;</span>) <span class="sc">/</span> <span class="fu">plotsd</span>(df1, <span class="st">&quot;n-1&quot;</span>) <span class="sc">/</span> <span class="fu">plotsd</span>(df2, <span class="st">&quot;n-2&quot;</span>)</span></code></pre></div>
+<p><img src="HandBook_files/figure-html/unnamed-chunk-25-1.png" alt="" width="672" /></p>
 
 </div>
             </section>
@@ -192,8 +216,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="descriptive-statistics.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="appendix-a.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="simple-linear-regression.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

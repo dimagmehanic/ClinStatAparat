@@ -6,7 +6,7 @@ rmd_files:
   - index.Rmd
   - 01-Descreptive-Statistics.Rmd
   - 02-Simple-Linear-Regression.Rmd
-
+  - appendix_a.Rmd
 language:
   ui:
     chapter_name: "Chapter "
