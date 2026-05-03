@@ -14,6 +14,6 @@ tryCatch({
   
 }, finally = {
   setwd(cwd)
+  browseURL("HandBook/docs/index.html")
 })
 
-# browseURL("HandBook/docs/index.html")
