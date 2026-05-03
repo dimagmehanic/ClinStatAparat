@@ -33,24 +33,11 @@ $$
 n
 $$
 
-<style>
-.container {
-  display: flex;
-  gap: 20px; /* increase spacing */
-}
-.box {
-  flex: 1;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-}
-</style>
-
 <div class="container">
 
 <div class="box">
 
-##### Variable BASE_CA
+**Variable BASE_CA**
 ```{r}
 get_obs(adlb_wide$BASE_CA) %>% df2print()
 ```
@@ -58,7 +45,7 @@ get_obs(adlb_wide$BASE_CA) %>% df2print()
 
 <div class="box">
 
-##### Variable AGE
+**Variable AGE**
 ```{r}
 get_obs(adlb_wide$AGE) %>% df2print()
 ```
@@ -98,6 +85,7 @@ $$k = 1 + 3.322 \log_{10}(n)$$
 </div>
  
 
+
 - Compute Class Width:
   - Formula:
     \[
@@ -120,7 +108,7 @@ $$k = 1 + 3.322 \log_{10}(n)$$
 
   <div class="box">
 
-##### Variable BASE_CA
+**Variable BASE_CA**
   ```{r}
   get_range(adlb_wide$BASE_CA) %>% df2print()
   hist(adlb_wide$BASE_CA, col = "lightblue")
@@ -129,7 +117,7 @@ $$k = 1 + 3.322 \log_{10}(n)$$
 
   <div class="box">
 
-##### Variable AGE
+**Variable AGE**
   ```{r}
   get_range(adlb_wide$AGE) %>% df2print()
   hist(adlb_wide$AGE, col = "lightblue")
@@ -173,7 +161,7 @@ be intersted in the modal lenght of neils he sells.
 
   <div class="box">
 
-##### Variable BASE_CA
+**Variable BASE_CA**
   ```{r}
   get_central(adlb_wide$BASE_CA) %>% df2print() 
   ```
@@ -181,7 +169,7 @@ be intersted in the modal lenght of neils he sells.
 
   <div class="box">
 
-##### Variable AGE
+**Variable AGE**
   ```{r}
   get_central(adlb_wide$AGE) %>% df2print()
   ```
@@ -221,11 +209,12 @@ $$
   - Almost all data (99.7%) falls within 3 standard deviations of the mean $(\bar{x} \pm 3s)$.
 </div>
 
+
 <div class="container">
 
   <div class="box">
 
-##### Variable BASE_CA
+**Variable BASE_CA**
   ```{r}
   get_sd(adlb_wide$BASE_CA) %>% df2print() 
   ```
@@ -233,7 +222,7 @@ $$
 
   <div class="box">
 
-##### Variable AGE
+**Variable AGE**
   ```{r}
   get_sd(adlb_wide$AGE) %>% df2print()
   ```
@@ -255,7 +244,7 @@ It measures the $std$ relative to the mean.
 
   <div class="box">
 
-##### Variable BASE_CA
+**Variable BASE_CA**
   ```{r}
   100*sd(adlb_wide$BASE_CA)/mean(adlb_wide$BASE_CA) 
   ```
@@ -263,7 +252,7 @@ It measures the $std$ relative to the mean.
 
   <div class="box">
 
-##### Variable AGE
+**Variable AGE**
   ```{r}
   100*sd(adlb_wide$AGE)/mean(adlb_wide$AGE) 
   ```
@@ -283,7 +272,7 @@ It measures the $std$ relative to the mean.
 
   <div class="box">
 
-##### Variable BASE_CA
+**Variable BASE_CA**
   ```{r}
   get_quartiles(adlb_wide$BASE_CA) %>% df2print() 
   ```
@@ -291,7 +280,7 @@ It measures the $std$ relative to the mean.
 
   <div class="box">
 
-##### Variable AGE
+**Variable AGE**
   ```{r}
   get_quartiles(adlb_wide$AGE) %>% df2print()
   ```
@@ -319,7 +308,7 @@ $$
 
   <div class="box">
 
-##### Variable BASE_CA
+**Variable BASE_CA**
   ```{r}
   get_iqr(adlb_wide$BASE_CA) %>% df2print() 
   boxplot(adlb_wide$BASE_CA, col = "lightblue", horizontal = TRUE)
@@ -328,7 +317,7 @@ $$
 
   <div class="box">
 
-##### Variable AGE
+**Variable AGE**
   ```{r}
   get_iqr(adlb_wide$AGE) %>% df2print()
   boxplot(adlb_wide$AGE, col = "lightblue", horizontal = TRUE)
@@ -350,7 +339,7 @@ $$
 
   <div class="box">
 
-##### Variable BASE_CA
+**Variable BASE_CA**
   ```{r} 
   z <- scale(adlb_wide$BASE_CA)
   hist(z, main = "Distribution of Z-scores",
@@ -362,7 +351,7 @@ $$
 
   <div class="box">
 
-##### Variable AGE
+**Variable AGE**
   ```{r} 
   z <- scale(adlb_wide$AGE)
   hist(z, main = "Distribution of Z-scores",
@@ -373,6 +362,8 @@ $$
   </div>
 </div>
 
+
+
 <div style="border-left: 4px solid #2c7be5; background:#f5f9ff; padding:12px; border-radius:6px;">
   <strong>Rule of thumb for detecting **outliers**:</strong><br>
 
@@ -380,38 +371,141 @@ $$
   - **Box plot**: observations falling between the inner and outer fences are considered **mild outliers**; observations falling outside the outer fences are considered **extreme outliers**.
 </div>
 
-## 11. Skewness
+
+## Skewness
 - **Definition:** Measure of asymmetry  
+More probability than expected in one tail of the distribution.
 - **Formula:**
 $$
 \text{Skewness} = \frac{1}{n} \sum \left(\frac{x_i - \bar{x}}{s}\right)^3
 $$
 
+| Skewness Value | Meaning            | Interpretation |
+|----------------|-------------------|----------------|
+| ≈ 0            | Symmetric         | Data is evenly distributed; mean ≈ median |
+| > 0            | Positive skew     | Right-skewed; long tail on the right; mean > median |
+| < 0            | Negative skew     | Left-skewed; long tail on the left; mean < median |
+| 0.5 to 1       | Moderate skew     | Noticeable asymmetry in distribution |
+| > 1            | Strong skew       | Highly asymmetric distribution |
+
+
+<div class="container">
+
+  <div class="box">
+
+**Variable BASE_CA**
+  ```{r} 
+  get_skewness(adlb_wide$BASE_CA, na.rm = TRUE) 
+  ```
+  </div> 
+
+  <div class="box">
+
+**Variable AGE**
+  ```{r} 
+  get_skewness(adlb_wide$AGE, na.rm = TRUE) 
+  ```
+  </div>
+</div>
+
 ---
 
-## 12. Kurtosis
+## Kurtosis
 - **Definition:** Measure of tail heaviness  
+Probability are pushed away from the mean towards the tails.
 - **Formula:**
 $$
-\text{Kurtosis} = \frac{1}{n} \sum \left(\frac{x_i - \bar{x}}{s}\right)^4
+\text{Raw Kurtosis} = \frac{1}{n} \sum \left(\frac{x_i - \bar{x}}{s}\right)^4
 $$
+$$
+\text{Excess Kurtosis} = \text{Raw Kurtosis} - 3
+$$
+
+| Kurtosis Value (Excess) | Distribution Type | Meaning | Interpretation |
+|--------------------------|------------------|---------|----------------|
+| ≈ 3 (Raw kurtosis)       | Mesokurtic          | Normal-like distribution | Similar peak and tail thickness as normal distribution |
+| > 3 (Raw kurtosis)       | Leptokurtic         | Heavy-tailed distribution | More extreme values (outliers), sharper peak |
+| < 3 (Raw kurtosis)       | Platykurtic         | Light-tailed distribution | Fewer outliers, flatter peak, more evenly spread data |
+| ≈ 0 (Excess kurtosis)    | Mesokurtic       | Normal-like distribution | Similar peak and tails as normal distribution |
+| > 0 (Excess kurtosis)    | Leptokurtic      | Heavy-tailed distribution | More outliers; sharper peak than normal |
+| < 0 (Excess kurtosis)    | Platykurtic      | Light-tailed distribution | Fewer outliers; flatter peak than normal |
+
+<div class="container">
+
+  <div class="box">
+
+**Variable BASE_CA**
+  ```{r} 
+  get_kurtosis(adlb_wide$BASE_CA, na.rm = TRUE) 
+  ```
+  </div> 
+
+  <div class="box">
+
+**Variable AGE**
+  ```{r} 
+  get_kurtosis(adlb_wide$AGE, na.rm = TRUE) 
+  ```
+  </div>
+</div>
 
 ---
 
-## 13. Covariance
+## Covariance
 - **Definition:** Joint variability of two variables  
 - **Formula:**
 $$
 \text{Cov}(X,Y) = \frac{1}{n-1} \sum (x_i - \bar{x})(y_i - \bar{y})
 $$
 
+
+<div class="container">
+
+  <div class="box">
+
+**Variable BASE_CA**
+  ```{r} 
+ 
+  ```
+  </div> 
+
+  <div class="box">
+
+**Variable AGE**
+  ```{r} 
+
+  ```
+  </div>
+</div>
+
+
 ---
 
-## 14. Correlation (Pearson)
+## Correlation (Pearson)
 - **Definition:** Standardized covariance  
 - **Formula:**
 $$
 r = \frac{\text{Cov}(X,Y)}{s_x s_y}
 $$
+
+
+<div class="container">
+
+  <div class="box">
+
+**Variable BASE_CA**
+  ```{r} 
+ 
+  ```
+  </div> 
+
+  <div class="box">
+
+**Variable AGE**
+  ```{r} 
+
+  ```
+  </div>
+</div>
 
 ---

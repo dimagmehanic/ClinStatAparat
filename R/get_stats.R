@@ -46,8 +46,8 @@ get_central <- function(x, ...) {
 
 # Function to compute variance
 get_sd <- function(x, ...) {
-  var <- var(x, ...)  %>% as.character()
-  sd <- sd(x, ...) %>% as.character()
+  var <- var(x, ...)
+  sd <- sd(x, ...)
 
   data.frame(
     Statistic = c("Variance", "Standard deviation"),
@@ -79,4 +79,40 @@ get_iqr <- function(x, ...) {
                   "Median", "Q3", "Upper inner fence", "Upper outer fence"),
     Value = c(lower_bound1, lower_bound, Q1, median, Q3, upper_bound, upper_bound1)  # nolint
   )
+}
+
+# Function to compute Skewness
+get_skewness <- function(x, na.rm = TRUE, ...) {
+
+  args  <- list(na.rm = na.rm, ...)
+
+  if (args$na.rm) {
+    x <- x[!is.na(x)]
+  }
+
+  n <- length(x)
+  m <- mean(x, na.rm = na.rm, ...)
+  s <- sd(x, na.rm = na.rm, ...)
+
+  skew <- sum(((x - m)^3) / (s^3)) / n
+
+  return(skew) # nolint
+}
+
+# Function to compute Kurtosis
+get_kurtosis <- function(x, na.rm = TRUE, ...) {
+
+  args  <- list(na.rm = na.rm, ...)
+
+  if (args$na.rm) {
+    x <- x[!is.na(x)]
+  }
+
+  n <- length(x)
+  m <- mean(x, na.rm = na.rm, ...)
+  s <- sd(x, na.rm = na.rm, ...)
+
+  kurtosis <- sum(((x - m)^4) / (s^4)) / n
+
+  return(kurtosis) # nolint
 }
