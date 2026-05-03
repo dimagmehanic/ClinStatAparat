@@ -17,12 +17,4 @@ Each chapter contains:
 
 ---
 
-## 👨‍💻 About
-
-Built for:
-- SAS/R programmers
-- Data scientists in pharma
-
----
-
-> “Good statistics is not about formulas — it's about interpretation.”
+> “... we must run as fast as we can, just to stay in place.” ― Lewis Carroll, Alice in Wonderland

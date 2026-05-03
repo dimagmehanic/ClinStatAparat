@@ -10,3 +10,14 @@
 .book .book-summary ul.summary li.active > a {
   color: #2c7be5;
 }
+
+.container {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.box {
+  flex: 1;
+  min-width: 300px;
+}

@@ -4,7 +4,9 @@
 library(here)
 library(ayuda)
 library(ggplot2)
-source(here::here("R/init.R"))
+source(here::here("scripts/load_adam.R"))
+source(here::here("R/get_obs.R"))
+source(here::here("R/df2print.R"))
 ```
 
 ```{r, echo=FALSE}

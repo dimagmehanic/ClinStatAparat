@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Page not found | Statistical HandBook</title>
-  <meta name="description" content="Page not found | Statistical HandBook" />
+  <title>Chapter 4 Appendix A: Bessel’s Correction | Statistical HandBook</title>
+  <meta name="description" content="Chapter 4 Appendix A: Bessel’s Correction | Statistical HandBook" />
   <meta name="generator" content="bookdown 0.46 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Page not found | Statistical HandBook" />
+  <meta property="og:title" content="Chapter 4 Appendix A: Bessel’s Correction | Statistical HandBook" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Page not found | Statistical HandBook" />
+  <meta name="twitter:title" content="Chapter 4 Appendix A: Bessel’s Correction | Statistical HandBook" />
   
   
   
@@ -28,7 +28,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
+<link rel="prev" href="simple-linear-regression.html"/>
 
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -182,18 +182,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="page-not-found" class="section level1">
-<h1>Page not found</h1>
-<p>The page you requested cannot be found (perhaps it was moved or renamed).</p>
-<p>You may want to try searching to find the page's new location, or use
-the table of contents to find the page you are looking for.</p>
+<div id="appendix-a" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Appendix A: Bessel’s Correction<a href="appendix-a.html#appendix-a" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Given a population of 50,000 random numbers between -1 and 1, we can calculate the standard deviation of the population.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="appendix-a.html#cb32-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb32-2"><a href="appendix-a.html#cb32-2" tabindex="-1"></a>pop <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">50000</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb32-3"><a href="appendix-a.html#cb32-3" tabindex="-1"></a>std <span class="ot">&lt;-</span> <span class="fu">pop_sd</span>(pop)</span></code></pre></div>
+<p>Then, we can take multiple samples of size 50 from this population and calculate the standard deviation of each sample using different formulas:
+dividing by n, n-1, and n-2.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="appendix-a.html#cb33-1" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>, <span class="cf">function</span>(x) <span class="fu">pop_sd</span>(<span class="fu">sample</span>(pop, <span class="dv">50</span>), <span class="at">n=</span><span class="dv">0</span>)))) <span class="sc">%&gt;%</span> <span class="fu">unlist</span>() <span class="co"># nolint</span></span>
+<span id="cb33-2"><a href="appendix-a.html#cb33-2" tabindex="-1"></a>sds1 <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>, <span class="cf">function</span>(x) <span class="fu">pop_sd</span>(<span class="fu">sample</span>(pop, <span class="dv">50</span>), <span class="at">n=</span><span class="dv">1</span>)))) <span class="sc">%&gt;%</span> <span class="fu">unlist</span>() <span class="co"># nolint</span></span>
+<span id="cb33-3"><a href="appendix-a.html#cb33-3" tabindex="-1"></a>sds2 <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>, <span class="cf">function</span>(x) <span class="fu">pop_sd</span>(<span class="fu">sample</span>(pop, <span class="dv">50</span>), <span class="at">n=</span><span class="dv">2</span>)))) <span class="sc">%&gt;%</span> <span class="fu">unlist</span>() <span class="co"># nolint</span></span></code></pre></div>
+<p>Finally, we can visualize the results to see how the choice of denominator affects the estimated standard deviation.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="appendix-a.html#cb34-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb34-2"><a href="appendix-a.html#cb34-2" tabindex="-1"></a>  <span class="at">iteration =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sds),</span>
+<span id="cb34-3"><a href="appendix-a.html#cb34-3" tabindex="-1"></a>  <span class="at">sdd =</span> sds</span>
+<span id="cb34-4"><a href="appendix-a.html#cb34-4" tabindex="-1"></a>)</span>
+<span id="cb34-5"><a href="appendix-a.html#cb34-5" tabindex="-1"></a>df1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb34-6"><a href="appendix-a.html#cb34-6" tabindex="-1"></a>  <span class="at">iteration =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sds1),</span>
+<span id="cb34-7"><a href="appendix-a.html#cb34-7" tabindex="-1"></a>  <span class="at">sdd =</span> sds1</span>
+<span id="cb34-8"><a href="appendix-a.html#cb34-8" tabindex="-1"></a>)</span>
+<span id="cb34-9"><a href="appendix-a.html#cb34-9" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb34-10"><a href="appendix-a.html#cb34-10" tabindex="-1"></a>  <span class="at">iteration =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sds2),</span>
+<span id="cb34-11"><a href="appendix-a.html#cb34-11" tabindex="-1"></a>  <span class="at">sdd =</span> sds2</span>
+<span id="cb34-12"><a href="appendix-a.html#cb34-12" tabindex="-1"></a>)</span>
+<span id="cb34-13"><a href="appendix-a.html#cb34-13" tabindex="-1"></a></span>
+<span id="cb34-14"><a href="appendix-a.html#cb34-14" tabindex="-1"></a><span class="fu">plotsd</span>(df, <span class="st">&quot;n&quot;</span>) <span class="sc">/</span> <span class="fu">plotsd</span>(df1, <span class="st">&quot;n-1&quot;</span>) <span class="sc">/</span> <span class="fu">plotsd</span>(df2, <span class="st">&quot;n-2&quot;</span>)</span></code></pre></div>
+<p><img src="HandBook_files/figure-html/unnamed-chunk-33-1.png" alt="" width="672" /></p>
+
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
+<a href="simple-linear-regression.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
     </div>
   </div>
