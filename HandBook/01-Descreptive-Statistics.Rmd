@@ -24,6 +24,10 @@ adlb_wide <- adlb %>%
     names_from = PARAMCD,
     values_from = c(AVAL, CHG, BASE)
   )
+
+A <- adlb_wide$BASE_CA
+B <- adlb_wide$CHG_CA
+
 ```
 
 ## Sample Size
@@ -37,17 +41,17 @@ $$
 
 <div class="box">
 
-**Variable BASE_CA**
+**Variable A**
 ```{r}
-get_obs(adlb_wide$BASE_CA) %>% df2print()
+get_obs(A) %>% df2print()
 ```
 </div> 
 
 <div class="box">
 
-**Variable AGE**
+**Variable B**
 ```{r}
-get_obs(adlb_wide$AGE) %>% df2print()
+get_obs(B) %>% df2print()
 ```
 </div> </div>
 
@@ -108,19 +112,19 @@ $$k = 1 + 3.322 \log_{10}(n)$$
 
   <div class="box">
 
-**Variable BASE_CA**
+**Variable A**
   ```{r}
-  get_range(adlb_wide$BASE_CA) %>% df2print()
-  hist(adlb_wide$BASE_CA, col = "lightblue")
+  get_range(A) %>% df2print()
+  hist(A, col = "lightblue")
   ```
   </div> 
 
   <div class="box">
 
-**Variable AGE**
+**Variable B**
   ```{r}
-  get_range(adlb_wide$AGE) %>% df2print()
-  hist(adlb_wide$AGE, col = "lightblue")
+  get_range(B) %>% df2print()
+  hist(B, col = "lightblue")
   ```
   </div>
 </div>
@@ -161,17 +165,17 @@ be intersted in the modal lenght of neils he sells.
 
   <div class="box">
 
-**Variable BASE_CA**
+**Variable A**
   ```{r}
-  get_central(adlb_wide$BASE_CA) %>% df2print() 
+  get_central(A) %>% df2print() 
   ```
   </div> 
 
   <div class="box">
 
-**Variable AGE**
+**Variable B**
   ```{r}
-  get_central(adlb_wide$AGE) %>% df2print()
+  get_central(B) %>% df2print()
   ```
   </div>
 </div>
@@ -214,17 +218,17 @@ $$
 
   <div class="box">
 
-**Variable BASE_CA**
+**Variable A**
   ```{r}
-  get_sd(adlb_wide$BASE_CA) %>% df2print() 
+  get_sd(A) %>% df2print() 
   ```
   </div> 
 
   <div class="box">
 
-**Variable AGE**
+**Variable B**
   ```{r}
-  get_sd(adlb_wide$AGE) %>% df2print()
+  get_sd(B) %>% df2print()
   ```
   </div>
 </div>
@@ -244,17 +248,17 @@ It measures the $std$ relative to the mean.
 
   <div class="box">
 
-**Variable BASE_CA**
+**Variable A**
   ```{r}
-  100*sd(adlb_wide$BASE_CA)/mean(adlb_wide$BASE_CA) 
+  100*sd(A)/mean(A) 
   ```
   </div> 
 
   <div class="box">
 
-**Variable AGE**
+**Variable B**
   ```{r}
-  100*sd(adlb_wide$AGE)/mean(adlb_wide$AGE) 
+  100*sd(B)/mean(B) 
   ```
   </div>
 </div>
@@ -272,17 +276,17 @@ It measures the $std$ relative to the mean.
 
   <div class="box">
 
-**Variable BASE_CA**
+**Variable A**
   ```{r}
-  get_quartiles(adlb_wide$BASE_CA) %>% df2print() 
+  get_quartiles(A) %>% df2print() 
   ```
   </div> 
 
   <div class="box">
 
-**Variable AGE**
+**Variable B**
   ```{r}
-  get_quartiles(adlb_wide$AGE) %>% df2print()
+  get_quartiles(B) %>% df2print()
   ```
   </div>
 </div>
@@ -308,19 +312,19 @@ $$
 
   <div class="box">
 
-**Variable BASE_CA**
+**Variable A**
   ```{r}
-  get_iqr(adlb_wide$BASE_CA) %>% df2print() 
-  boxplot(adlb_wide$BASE_CA, col = "lightblue", horizontal = TRUE)
+  get_iqr(A) %>% df2print() 
+  boxplot(A, col = "lightblue", horizontal = TRUE)
   ```
   </div> 
 
   <div class="box">
 
-**Variable AGE**
+**Variable B**
   ```{r}
-  get_iqr(adlb_wide$AGE) %>% df2print()
-  boxplot(adlb_wide$AGE, col = "lightblue", horizontal = TRUE)
+  get_iqr(B) %>% df2print()
+  boxplot(B, col = "lightblue", horizontal = TRUE)
   ```
   </div>
 </div>
@@ -339,9 +343,9 @@ $$
 
   <div class="box">
 
-**Variable BASE_CA**
+**Variable A**
   ```{r} 
-  z <- scale(adlb_wide$BASE_CA)
+  z <- scale(A)
   hist(z, main = "Distribution of Z-scores",
        xlab = "Z-score",
        col = "lightblue",
@@ -351,9 +355,9 @@ $$
 
   <div class="box">
 
-**Variable AGE**
+**Variable B**
   ```{r} 
-  z <- scale(adlb_wide$AGE)
+  z <- scale(B)
   hist(z, main = "Distribution of Z-scores",
        xlab = "Z-score",
        col = "lightblue",
@@ -393,17 +397,17 @@ $$
 
   <div class="box">
 
-**Variable BASE_CA**
+**Variable A**
   ```{r} 
-  get_skewness(adlb_wide$BASE_CA, na.rm = TRUE) 
+  get_skewness(A, na.rm = TRUE) 
   ```
   </div> 
 
   <div class="box">
 
-**Variable AGE**
+**Variable B**
   ```{r} 
-  get_skewness(adlb_wide$AGE, na.rm = TRUE) 
+  get_skewness(B, na.rm = TRUE) 
   ```
   </div>
 </div>
@@ -434,17 +438,17 @@ $$
 
   <div class="box">
 
-**Variable BASE_CA**
+**Variable A**
   ```{r} 
-  get_kurtosis(adlb_wide$BASE_CA, na.rm = TRUE) 
+  get_kurtosis(A, na.rm = TRUE) 
   ```
   </div> 
 
   <div class="box">
 
-**Variable AGE**
+**Variable B**
   ```{r} 
-  get_kurtosis(adlb_wide$AGE, na.rm = TRUE) 
+  get_kurtosis(B, na.rm = TRUE) 
   ```
   </div>
 </div>
@@ -453,59 +457,80 @@ $$
 
 ## Covariance
 - **Definition:** Joint variability of two variables  
+Covariance is one of family of statistical measures that describe the relationship between two variables. 
+It indicates the direction of the linear relationship between them. 
+A positive covariance indicates that the two variables tend to increase together, while a negative covariance indicates that one variable tends to increase when the other decreases. 
+However, covariance does not provide information about the strength of the relationship, which is why correlation is often used as a standardized measure of covariance.
 - **Formula:**
 $$
 \text{Cov}(X,Y) = \frac{1}{n-1} \sum (x_i - \bar{x})(y_i - \bar{y})
 $$
 
-
 <div class="container">
 
   <div class="box">
 
-**Variable BASE_CA**
+**Variable A vs B**
   ```{r} 
- 
+  cov(A, B)
   ```
   </div> 
 
-  <div class="box">
-
-**Variable AGE**
-  ```{r} 
-
-  ```
-  </div>
 </div>
 
+Covariance result has no upper or lower bound, and its value is influenced by the scale of the variables. 
+While correlation, on the other hand, is a standardized measure of covariance that ranges between -1 and 1, providing information about both the direction and 
+strength of the linear relationship between two variables.
 
 ---
 
-## Correlation (Pearson)
+## Correlation (Pearson) {#correlation}
 - **Definition:** Standardized covariance  
+
+<div style="border-left: 4px solid #2c7be5; background:#f5f9ff; padding:12px; border-radius:6px;">
+  <strong>Correlation caveats:</strong><br>
+
+  - Look at you data(scatterplot) before interpreting the correlation coefficient
+  - Correlation is only applicable for linear relationships.
+  - Correlation is **NOT** causation. A high correlation does not imply that changes in one variable cause changes in the other.
+</div>
+
 - **Formula:**
 $$
 r = \frac{\text{Cov}(X,Y)}{s_x s_y}
 $$
 
+| Correlation (r) | Strength        | Interpretation |
+|------------------|-----------------|----------------|
+| 0.00 – 0.10      | None            | No linear relationship |
+| 0.10 – 0.30      | Weak            | Slight trend, not reliable |
+| 0.30 – 0.50      | Moderate        | Noticeable relationship |
+| 0.50 – 0.70      | Strong          | Clear relationship |
+| 0.70 – 0.90      | Very strong     | Highly related variables |
+| 0.90 – 1.00      | Near perfect    | Almost perfectly linear |
+| -0.10 – 0.00     | None (negative) | No linear relationship |
+| -0.30 – -0.10    | Weak negative   | Slight inverse trend |
+| -0.50 – -0.30    | Moderate negative | Noticeable inverse relationship |
+| -0.70 – -0.50    | Strong negative | Clear inverse relationship |
+| -1.00 – -0.70    | Very strong negative | Highly inverse relationship |
+| -1.00            | Perfect negative | Perfect inverse linear relationship |
 
 <div class="container">
 
   <div class="box">
 
-**Variable BASE_CA**
+**Variable A vs B**
   ```{r} 
- 
+  cor(A, B)
   ```
   </div> 
+ 
+</div>
 
-  <div class="box">
+<div style="border-left: 4px solid #2c7be5; background:#f5f9ff; padding:12px; border-radius:6px;">
+  <strong>Rule of thumb:</strong><br>
 
-**Variable AGE**
-  ```{r} 
-
-  ```
-  </div>
+  if $|r| \geq \frac{2}{\sqrt(n)}$, the correlation is considered strong.
 </div>
 
 ---

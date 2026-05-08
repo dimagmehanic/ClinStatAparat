@@ -4,17 +4,38 @@ site: bookdown::bookdown_site
 output: bookdown::gitbook
 ---
 
-# Welcome
+# Welcome to HandBook
 
-**HandBook** is a structured guide for clinical statistics, programming, and data science applications.
-
-## 🚀 How to use this book
-
-Each chapter contains:
-- Concept explanations
-- R code examples
-- Practical clinical applications
+<p class="subtitle">
+Structured guide for clinical statistics, programming, and data science applications.
+</p>
 
 ---
 
+<div class="callout">
+All examples in this book are built using the <strong>Pharmaverse ADaM datasets</strong>, which are industry-standard clinical trial datasets used in statistical programming and regulatory reporting.
+</div>
+
+---
+
+## 🚀 How to use this book
+
+This handbook is designed for practical learning.
+
+Each chapter contains:
+
+- 📘 Concept explanations  
+- 💻 R code examples  
+- 🏥 Clinical applications  
+- 📊 Real dataset usage (ADaM)
+
+--- 
+ 
+<p class="footer-note">
+Built using Pharmaverse ADaM datasets for realistic clinical examples.
+</p>
+--- 
+
 > “... we must run as fast as we can, just to stay in place.” ― Lewis Carroll, Alice in Wonderland
+
+--- 
