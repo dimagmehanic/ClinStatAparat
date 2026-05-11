@@ -63,8 +63,8 @@ $$
 
 ## Before regression: Exploratory Data Analysis
 
-**Step 1**
-Plot the data to see if there is a relationship between the two variables.
+**Step 1** {#scatter_plot}
+Plot the data to see if there is a relationship between the two variables. 
 
 ```{r, echo=FALSE}
 # plot results by TRT01p as color
@@ -235,22 +235,25 @@ Find $b_0$ and $b_1$ using (3) and (4):
 
 ```{r , echo=FALSE} 
 fit <- adlb_wide %>% lm(CHG_CA ~ BASE_CA, data = .)
-y      <- adlb_wide$CHG_CA
-yhat   <- fitted(fit)
-resid  <- residuals(fit)
-ybar   <- mean(y)
+x <- adlb_wide$BASE_CA
+y <- adlb_wide$CHG_CA
+yhat <- fitted(fit)
+resid <- residuals(fit)
+ybar <- mean(y)
 ```
 
 ```{r results='asis'} 
-sprintf("$$b_0 = %.2f$$", round(coef(fit)[1], 2)) %>% cat()
-sprintf("$$b_1 = %.2f$$", round(coef(fit)[2], 2)) %>% cat()
+b_1  <- coef(fit)[2]
+b_0 <- coef(fit)[1]
+sprintf("$$b_0 = %.2f$$", round(b_0, 2)) %>% cat()
+sprintf("$$b_1 = %.2f$$", round(b_1, 2)) %>% cat()
 ```
 
 ```{r, echo=FALSE}
 label_eq <- sprintf(
   "$$\\hat{y_i} = %.2f + %.2f x_i$$",
-  round(coef(fit)[1], 2),
-  round(coef(fit)[2], 2)
+  round(b_0, 2),
+  round(b_1, 2)
 )
 ```
 ```{r results='asis'}
@@ -261,7 +264,7 @@ label_eq %>% cat()
 adlb_wide %>% 
   ggplot(aes(BASE_CA, CHG_CA)) +
   geom_point(aes(color = "Observed data")) +
-  geom_abline(aes(slope = coef(fit)[2], intercept = coef(fit)[1],
+  geom_abline(aes(slope = b_1, intercept = b_0,
                   color = "Regression line")) +
   geom_point(
     data = adlb_wide %>% summarise(
@@ -320,7 +323,7 @@ SSE = \sum_{i=1}^{n}(y_i - \hat{y_i})^2
 $$
 
 ```{r results='asis'} 
-SSE <- SSE <- sum(resid^2)
+SSE <- sum(resid^2)
 sprintf("$$SSE = %.2f$$", round(SSE, 2)) %>% cat() 
 ```
 
@@ -365,14 +368,18 @@ $$
 
 where:
 
-- $p$  = number of predictors   
+- $p$  = number of predictors. Sometimes instead of $n - p - 1$ you may see $df$
+- $df = n - p - 1$ is degrees of freedom
 
 ```{r results='asis'}
 p <- 1 # number of predictors 
+df <- n - p - 1
 R2_adj <- 1 - ((1 - SSR/SST) * (n - 1)) / (n - p - 1)
 sprintf("$$R^2_{adj} = %.3f$$", round(R2_adj, 3)) %>% cat()
 summary(fit)$adj.r.squared
 ```
+
+---
 
 ## Standardized Variables
 
@@ -495,7 +502,7 @@ adlb_std %>%
   - determine whiich variable in multiple regression account for more variance in the response variable.
 </div>
 
-
+---
 
 ## Statistical sagnificance
 
@@ -503,10 +510,745 @@ adlb_std %>%
 * Can we reject $H_0$ that the slope $b_1$ is zero;
 * Does confidence inteval for $b_1$ contain zero.
 
+### Standart error of estimate
+
+$$
+MSE = \frac{SSE}{n-2}
+$$
+
+where:
+
+- $SSE$ is the sum of squared errors
+- $MSE$ is the mean squared error
+
+```{r results='asis'}
+MSE <- SSE/(n-2)
+sprintf("$$MSE = %.3f$$", round(MSE, 3)) %>% cat()
+summary(fit)$sigma^2
+```
+
 ### Confidence interval for slope
 
+For the simple linear regression model
 
+the $(1 - \alpha)100\%$ confidence interval for the slope $b_1$ is
+
+$$
+b_1 \pm t_{\alpha/2,\,df} \cdot SE(b_1)
+$$
+
+where:
+
+- $b_1$ is the estimated slope
+- $SE(b_1)$ is the standard error of the slope estimate
+- $t_{\alpha/2,\,df}$ is the critical value from the $t$ distribution
+- $\alpha$ usually is set to $0.05$ for a $95\%$ confidence interval
+- $df$ are the degrees of freedom
+
+The standard error of the slope is
+
+$$
+SE(b_1) =
+\sqrt{
+\frac{MSE}
+{\sum (x_i - \bar{x})^2}
+}
+$$
+
+```{r results='asis'}
+SE_b1 <- sqrt(MSE/((n-1)*var(x, na.rm = TRUE)))
+sprintf("$$SE(b_1) = %.5f$$", round(SE_b1, 6)) %>% cat()
+summary(fit)$coefficients[2, 2]
+```
+
+Confidence interval for the slope:
+
+```{r results='asis'}
+alpha <- 0.05
+
+t_crit <- qt(1 - alpha/2, df)
+
+lower <- b_1 - t_crit * SE_b1
+upper <- b_1 + t_crit * SE_b1
+
+cat(sprintf("$$[%.3f, %.3f]$$", lower, upper))
+
+confint(fit, level = 0.95) [2,]
+```
+
+The confidence interval does not contain zero.
+
+### Test statistic
+
+#### t-statistic (for a coefficient)
+
+For two-tailed testing $H_0: b_1 = 0$:
+
+$$
+t = \frac{b_1}{SE(b_1)}
+$$
+
+where:
+
+- $b_1$ is the estimated coefficient  
+- $SE(b_1)$ is its standard error  
+
+
+at significance level $\alpha$, we reject $H_0$ if:
+
+$$
+|t| > t_{\alpha/2,\, df}
+$$
+
+```{r results='asis'}
+t  <- b_1/SE_b1
+cat(sprintf("$$ |%.3f| > %.3f$$", abs(t), t_crit))
+
+
+t_val <- summary(fit)$coefficients[2, "t value"]
+p_val <- summary(fit)$coefficients[2, "Pr(>|t|)"]
+
+cat(sprintf("$$t = %.3f, \\quad p = %.6f$$", t_val, p_val))
+```
+
+The confidence interval does not contain zero and $|t| > t_{\alpha/2,\, df}$ , so we can reject the null hypothesis that the slope is zero and conclude 
+that there is a statistically significant linear relationship between $x$ and $y$.
+
+
+#### F-statistic (overall regression significance)
+
+For two-tailed testing:
+$$
+H_0: b_1 = 0
+$$
+
+$$
+F = \frac{MSR}{MSE}
+$$
+
+where:
+
+- $MSR = \frac{SSR}{p}$ (Mean Square Regression)
+- $MSE = \frac{SSE}{n-p-1}$ (Mean Square Error)
+
+Equivalent form:
+
+$$
+F = \frac{SSR / p}{SSE / (n - p - 1)}
+$$
+
+at significance level $\alpha$, we reject $H_0$ if:
+
+$$
+|F| > F_{\alpha,\, p,\, df}
+$$
+
+```{r results='asis'}
+MSR <- SSR/p
+F  <- MSR/MSE
+F_crit  <-  qf(1 - alpha/2, p, df)
+
+cat(sprintf("$$ |%.3f| > %.3f$$", abs(F), F_crit))
+
+summary(fit)$fstatistic[1]
+```
+
+The confidence interval does not contain zero and $|F| > F_{\alpha,\, p,\, df}$ , so we can reject the null hypothesis that the slope is zero and conclude 
+that there is a statistically significant linear relationship between $x$ and $y$.
+
+---
+
+## Bands
+
+### Confidence band
+<div style="border-left: 4px solid #2c7be5; background:#f5f9ff; padding:12px; border-radius:6px;">
+**NOTE**: Regression is not deterministic.
+</div>
+We can not generate an exact value but we can generate mean and confidence interval for 
+the mean response at a given predictor value $x_0$.
+For a given predictor value $x_0$, the confidence interval for the mean response is
+
+$$
+\hat{y}(x_0)
+\pm
+t_{\alpha/2,\,n-2}
+\sqrt{
+MSE
+\left(
+\frac{1}{n}
++
+\frac{(x_0 - \bar{x})^2}
+{\sum (x_i - \bar{x})^2}
+\right)
+}
+$$
+
+where:
+
+- $\hat{y}(x_0)$ is the fitted mean response at $x_0$
+- $MSE = \dfrac{SSE}{n-2}$
+- $t_{\alpha/2,\,df}$ is the critical $t$ value
+- $n$ is the number of observations
+
+From the formula we can see that the most precice estimate of the population mean is at 
+the centroid of the data ($x_0 = \bar{x}$). After the $\bar{x}$ the interval become vider.
+
+```{r results='asis'}
+xbar <- mean(x, na.rm = TRUE)
+x0 <- sample(x, 1) # take a random value 
+y_x0 <- predict( fit, newdata = data.frame( BASE_CA = x0)) # nolint
+
+
+SE_x0 <- sqrt(MSE * ((1 / n) + ((x0 - xbar)^2) / sum((x - xbar)^2)))
+
+lower <- y_x0 - t_crit * SE_x0
+upper <- y_x0 + t_crit * SE_x0
+
+cat(sprintf("$$[%.3f, %.3f]$$", lower, upper))
+
+predict(
+  fit,
+  newdata = data.frame(BASE_CA = x0),
+  interval = "confidence",
+  level = 0.95
+)
+```
 
 ```{r}
-summary(fit)
+adlb_wide %>% 
+  ggplot(aes(BASE_CA, CHG_CA)) +
+  
+  geom_point(aes(color = "Observed data")) +
+  
+  geom_smooth(
+    method = "lm",
+    se = TRUE,
+    aes(color = "Regression line",
+        fill = "95% Confidence Band")
+  ) +
+  
+  geom_point(
+    data = adlb_wide %>% summarise(
+      BASE_CA = mean(BASE_CA, na.rm = TRUE),
+      CHG_CA  = mean(CHG_CA, na.rm = TRUE)
+    ),
+    aes(BASE_CA, CHG_CA, color = "Centroid"),
+    size = 2
+  ) +
+  
+  scale_color_manual(
+    name = "Components",
+    values = c(
+      "Observed data" = "black",
+      "Regression line" = "red",
+      "Centroid" = "yellow"
+    )
+  ) +
+  
+  scale_fill_manual(
+    name = "Components",
+    values = c(
+      "95% Confidence Band" = "skyblue"
+    )
+  )
+```
+
+### Prediction band
+
+For a given predictor value $x_0$, the prediction interval for a new observation is
+
+$$
+\hat{y}(x_0)
+\pm
+t_{\alpha/2,\,df}
+\sqrt{
+MSE
+\left(
+1 +
+\frac{1}{n}
++
+\frac{(x_0 - \bar{x})^2}
+{\sum (x_i - \bar{x})^2}
+\right)
+}
+$$
+
+Important Difference
+<div style="border-left: 4px solid #2c7be5; background:#f5f9ff; padding:12px; border-radius:6px;">
+Important Difference
+Prediction bands are wider than confidence bands because they include:
+
+- uncertainty in estimating the mean response
+- variability of individual observations
+</div>
+
+
+```{r results='asis'}
+PSE_x0 <- sqrt(MSE + SE_x0^2)
+
+lower <- y_x0 - t_crit * PSE_x0
+upper <- y_x0 + t_crit * PSE_x0
+
+cat(sprintf("$$[%.3f, %.3f]$$", lower, upper))
+
+predict(
+  fit,
+  newdata = data.frame(BASE_CA = x0),
+  interval = "prediction",
+  level = 0.95
+)
+```
+
+```{r}
+
+grid <- data.frame(
+  BASE_CA = seq(
+    min(adlb_wide$BASE_CA, na.rm = TRUE),
+    max(adlb_wide$BASE_CA, na.rm = TRUE),
+    length.out = 100
+  )
+)
+
+# confidence + prediction
+ci <- predict(fit, newdata = grid, interval = "confidence")
+pi <- predict(fit, newdata = grid, interval = "prediction")
+
+grid_ci <- cbind(grid, ci)
+grid_pi <- cbind(grid, pi)
+ 
+ggplot() +
+  
+  # prediction band (must come first)
+  geom_ribbon(
+    data = grid_pi,
+    aes(x = BASE_CA, ymin = lwr, ymax = upr, fill = "95% Prediction Interval"),
+    alpha = 0.15
+  ) +
+  
+  # confidence band
+  geom_ribbon(
+    data = grid_ci,
+    aes(x = BASE_CA, ymin = lwr, ymax = upr, fill = "95% Confidence Band"),
+    alpha = 0.25
+  ) +
+  
+  # raw data
+  geom_point(
+    data = adlb_wide,
+    aes(BASE_CA, CHG_CA, color = "Observed data")
+  ) +
+  
+  # regression line
+  geom_smooth(
+    data = adlb_wide,
+    aes(BASE_CA, CHG_CA, color = "Regression line"),
+    method = "lm",
+    se = FALSE
+  ) +
+  
+  scale_color_manual(
+    name = "Components",
+    values = c(
+      "Observed data" = "black",
+      "Regression line" = "red"
+    )
+  ) +
+  
+  scale_fill_manual(
+    name = "Intervals",
+    values = c(
+      "95% Confidence Band" = "skyblue",
+      "95% Prediction Interval" = "orange"
+    )
+  )
+```
+
+---
+
+## Residual analysis
+
+Residual analysis is used to assess whether the assumptions of the regression model are reasonable.
+The variance left unexplained is due to the error term $\varepsilon$ in the regression model.
+
+The residual for observation $i$ is
+
+$$
+e_i = y_i - \hat{y}_i
+$$
+
+where:
+
+- $y_i$ is the observed response
+- $\hat{y_i}$ is the fitted value
+
+```{r}
+ggplot(
+  data.frame(
+    fitted = fitted(fit),
+    residuals = residuals(fit)
+  ),
+  aes(fitted, residuals)
+) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(
+    title = "Residuals vs Fitted",
+    x = "Fitted values",
+    y = "Residuals"
+  ) 
+```
+
+### Homoscedasticity
+
+Homoscedasticity means that the variance of the errors is constant:
+
+$$
+Var(\varepsilon_i) = \sigma^2
+$$
+
+for all observations.
+
+A homoscedastic residual plot typically looks like a horizontal cloud of points.
+```{r, echo=FALSE}
+set.seed(123)
+
+N <- 200
+X <- runif(N, 0, 10)
+
+Y <- 5 + 2 * X + rnorm(N, mean = 0, sd = 1)
+
+test_fit <- lm(Y ~ X)
+
+# Residual plot
+ggplot(
+  data.frame(
+    fitted = fitted(test_fit),
+    residuals = residuals(test_fit)
+  ),
+  aes(fitted, residuals)
+) +
+  geom_point() +
+  geom_hline(yintercept = 0,
+             linetype = "dashed",
+             color = "red") +
+  labs(
+    title = "Homoscedastic Residual Plot",
+    x = "Fitted values",
+    y = "Residuals"
+  ) 
+```
+
+
+### Heteroscedasticity
+
+Heteroscedasticity occurs when the variance of the errors changes with the fitted values or predictors.
+
+In a residual plot:
+
+- spread increases or decreases
+- funnel or cone shapes may appear
+- residual variability is not constant
+
+Common patterns:
+
+- widening spread
+- narrowing spread
+- curved structures
+
+```{r, echo=FALSE}
+# Error variance increases with x
+Y <- 5 + 2 * X + rnorm(N, mean = 0, sd = 0.5 * X)
+
+test_fit <- lm(Y ~ X)
+
+# Residual plot
+ggplot(
+  data.frame(
+    fitted = fitted(test_fit),
+    residuals = residuals(test_fit)
+  ),
+  aes(fitted, residuals)
+) +
+  geom_point() +
+  geom_hline(yintercept = 0,
+             linetype = "dashed",
+             color = "red") +
+  labs(
+    title = "Heteroscedastic Residual Plot",
+    x = "Fitted values",
+    y = "Residuals"
+  )
+```
+
+
+### Desired Residual Plot
+
+A good residual plot should show:
+
+- random scatter around $0$
+- no systematic structure
+- approximately equal variance
+- no strong outliers
+
+### Tests for residuals
+
+#### Shapiro-Wilk Test
+
+The Shapiro-Wilk test is used to assess whether residuals are normally distributed.
+
+**Hypotheses**
+
+$$
+H_0:\ \text{Residuals are normally distributed}
+$$
+
+$$
+H_A:\ \text{Residuals are not normally distributed}
+$$
+
+```{r}
+# Shapiro-Wilk test
+shapiro.test(residuals(fit))
+```
+
+**Interpretation**
+
+- Large p-value:
+  residuals appear approximately normal
+
+- Small p-value:
+  evidence against normality
+
+
+#### Breusch-Pagan Test
+
+The Breusch-Pagan test is used to detect heteroscedasticity.
+
+**Hypotheses**
+
+$$
+H_0:\ \text{Constant variance (homoscedasticity)}
+$$
+
+$$
+H_A:\ \text{Non-constant variance (heteroscedasticity)}
+$$
+
+```{r}
+# Breusch-Pagan test 
+lmtest::bptest(fit)
+```
+
+**Interpretation**
+
+- Large p-value:
+  constant variance is reasonable
+
+- Small p-value:
+  evidence of heteroscedasticity
+
+#### Durbin-Watson Test
+
+The Durbin-Watson test is used to detect autocorrelation in residuals.
+
+**Hypotheses**
+
+$$
+H_0:\ \text{No autocorrelation}
+$$
+
+$$
+H_A:\ \text{Autocorrelation exists}
+$$
+
+```{r}
+# Durbin-Watson test
+lmtest::dwtest(fit)
+```
+
+**Interpretation**
+
+- Large p-value:
+  residuals appear independent
+
+- Small p-value:
+  evidence of autocorrelation
+
+#### White Test
+
+The White test is a general test for heteroscedasticity.
+
+It allows variance to depend on:
+- predictors
+- squared predictors
+- interaction terms
+
+**Hypotheses**
+
+$$
+H_0:\ \text{Homoscedasticity}
+$$
+
+$$
+H_A:\ \text{Heteroscedasticity}
+$$
+
+```{r}
+# White test
+lmtest::bptest(
+  fit,
+  ~ fitted(fit) + I(fitted(fit)^2)
+)
+```
+
+**Interpretation**
+
+- Large p-value:
+  no evidence of heteroscedasticity
+
+- Small p-value:
+  evidence of heteroscedasticity
+
+#### NCV Test (Non-Constant Variance Test)
+
+The NCV test evaluates whether residual variance changes with fitted values.
+
+**Hypotheses**
+
+$$
+H_0:\ \text{Constant variance}
+$$
+
+$$
+H_A:\ \text{Non-constant variance}
+$$
+
+```{r}
+# NCV test
+car::ncvTest(fit)
+```
+
+**Interpretation**
+
+- Large p-value:
+  constant variance assumption is reasonable
+
+- Small p-value:
+  evidence of changing variance
+
+
+
+
+---
+
+
+## Outliers
+
+- **Always do scatter plot!!!** Sometimes you will see points out of place. \@ref(scatter_plot) 
+- Also chech other methods to identify outliers, see \@ref(iqr).
+- An out of normal point may have a large residual.
+
+<div style="border-left: 4px solid #2c7be5; background:#f5f9ff; padding:12px; border-radius:6px;"> 
+**NOTE**: for standardised residuals usually $<2$ are more possible otliers.
+</div>
+
+```{r}
+ggplot(
+  data.frame(
+    fitted = fitted(fit_z),
+    residuals = residuals(fit_z)
+  ),
+  aes(fitted, residuals)
+) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(
+    title = "Standardised Residuals vs Fitted",
+    x = "Fitted values",
+    y = "Residuals"
+  ) 
+```
+
+### Influential observations
+
+Influential observations are data points that have a strong effect on the fitted regression model.
+
+Outliers can influence the regression line and pull it toward them, potentially changing:
+
+- slope estimates
+- intercept estimates
+- hypothesis tests
+- predictions
+
+Not all outliers are influential.
+
+### Leverage Points
+
+Leverage measures how far a predictor value is from the mean of the predictor.
+
+Observations with unusual predictor values may have high leverage and can strongly affect the regression line.
+
+For simple linear regression, the leverage of observation $i$ is
+
+$$
+h_i =
+\frac{1}{n}
++
+\frac{(x_i - \bar{x})^2}
+{\sum_{j=1}^{n}(x_j - \bar{x})^2}
+$$
+
+where:
+
+- $n$ is the sample size
+- $\bar{x}$ is the sample mean of $x$
+- $h_i$ is the leverage of observation $i$
+
+ Rule of Thumb
+
+<div style="border-left: 4px solid #2c7be5; background:#f5f9ff; padding:12px; border-radius:6px;">
+  <strong> Rule of Thumb</strong><br>
+  Potential high leverage points are often identified using:
+  $$
+  h_i > \frac{2(p+1)}{n}
+  $$
+
+  or
+
+  $$
+  h_i > \frac{3(p+1)}{n}
+  $$
+
+  where:
+
+  - $p$ is the number of predictors
+  - $n$ is the sample size
+
+</div>
+ 
+```{r}
+lev <- hatvalues(fit)
+
+# Add leverage to dataset
+adlb_wide$leverage <- lev
+
+cutoff <- 2 * ((p+1) / nrow(adlb_wide))
+
+# Show highest leverage points
+ggplot(adlb_wide,
+       aes(BASE_CA, leverage,
+           color = leverage > cutoff)) +
+  geom_point(size = 2) +
+  geom_hline(
+    yintercept = cutoff,
+    color = "red",
+    linetype = "dashed"
+  ) +
+  labs(
+    title = "High Leverage Points",
+    x = "BASE_CA",
+    y = "Leverage"
+  )
 ```

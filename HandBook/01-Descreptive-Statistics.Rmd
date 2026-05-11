@@ -293,7 +293,7 @@ It measures the $std$ relative to the mean.
 
 ---
 
-## Interquartile Range (IQR)
+## Interquartile Range (IQR) {#iqr}
 - **Definition:** Distance between Q1 and Q3  
 - **Formula:**
 $$
