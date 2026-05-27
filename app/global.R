@@ -1,3 +1,5 @@
+# Load the necessary library
 library(here)
-source(here::here("scripts/load_adam.R"))
-
+library(shiny)
+library(ayuda)
+source(here::here("R/init.R"))

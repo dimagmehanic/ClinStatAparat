@@ -5,6 +5,7 @@ dataset_names <- data(package = "pharmaverseadam")$results[, "Item"]
 adam <- set_names(
   map(dataset_names, function(nm) {
     function() {
+      # load the dataset
       data(list = nm, package = "pharmaverseadam")
       get(nm)
     }
