@@ -700,15 +700,15 @@ the centroid of the data (<span class="math inline">\(x_0 = \bar{x}\)</span>). A
 <span id="cb66-9"><a href="simple-linear-regression.html#cb66-9" tabindex="-1"></a>upper <span class="ot">&lt;-</span> y_x0 <span class="sc">+</span> t_crit <span class="sc">*</span> SE_x0</span>
 <span id="cb66-10"><a href="simple-linear-regression.html#cb66-10" tabindex="-1"></a></span>
 <span id="cb66-11"><a href="simple-linear-regression.html#cb66-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;$$[%.3f, %.3f]$$&quot;</span>, lower, upper))</span></code></pre></div>
-<p><span class="math display">\[[-0.124, -0.077]\]</span></p>
+<p><span class="math display">\[[-0.084, -0.051]\]</span></p>
 <div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="simple-linear-regression.html#cb67-1" tabindex="-1"></a><span class="fu">predict</span>(</span>
 <span id="cb67-2"><a href="simple-linear-regression.html#cb67-2" tabindex="-1"></a>  fit,</span>
 <span id="cb67-3"><a href="simple-linear-regression.html#cb67-3" tabindex="-1"></a>  <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">BASE_CA =</span> x0),</span>
 <span id="cb67-4"><a href="simple-linear-regression.html#cb67-4" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">&quot;confidence&quot;</span>,</span>
 <span id="cb67-5"><a href="simple-linear-regression.html#cb67-5" tabindex="-1"></a>  <span class="at">level =</span> <span class="fl">0.95</span></span>
 <span id="cb67-6"><a href="simple-linear-regression.html#cb67-6" tabindex="-1"></a>)</span></code></pre></div>
-<pre><code>    fit        lwr         upr</code></pre>
-<p>1 -0.100538 -0.1237354 -0.07734061</p>
+<pre><code>     fit        lwr        upr</code></pre>
+<p>1 -0.0674799 -0.0835492 -0.0514106</p>
 <div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="simple-linear-regression.html#cb69-1" tabindex="-1"></a>adlb_wide <span class="sc">%&gt;%</span> </span>
 <span id="cb69-2"><a href="simple-linear-regression.html#cb69-2" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(BASE_CA, CHG_CA)) <span class="sc">+</span></span>
 <span id="cb69-3"><a href="simple-linear-regression.html#cb69-3" tabindex="-1"></a>  </span>
@@ -781,15 +781,15 @@ Prediction bands are wider than confidence bands because they include:</p>
 <span id="cb71-4"><a href="simple-linear-regression.html#cb71-4" tabindex="-1"></a>upper <span class="ot">&lt;-</span> y_x0 <span class="sc">+</span> t_crit <span class="sc">*</span> PSE_x0</span>
 <span id="cb71-5"><a href="simple-linear-regression.html#cb71-5" tabindex="-1"></a></span>
 <span id="cb71-6"><a href="simple-linear-regression.html#cb71-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;$$[%.3f, %.3f]$$&quot;</span>, lower, upper))</span></code></pre></div>
-<p><span class="math display">\[[-0.278, 0.077]\]</span></p>
+<p><span class="math display">\[[-0.244, 0.109]\]</span></p>
 <div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="simple-linear-regression.html#cb72-1" tabindex="-1"></a><span class="fu">predict</span>(</span>
 <span id="cb72-2"><a href="simple-linear-regression.html#cb72-2" tabindex="-1"></a>  fit,</span>
 <span id="cb72-3"><a href="simple-linear-regression.html#cb72-3" tabindex="-1"></a>  <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">BASE_CA =</span> x0),</span>
 <span id="cb72-4"><a href="simple-linear-regression.html#cb72-4" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>,</span>
 <span id="cb72-5"><a href="simple-linear-regression.html#cb72-5" tabindex="-1"></a>  <span class="at">level =</span> <span class="fl">0.95</span></span>
 <span id="cb72-6"><a href="simple-linear-regression.html#cb72-6" tabindex="-1"></a>)</span></code></pre></div>
-<pre><code>    fit        lwr        upr</code></pre>
-<p>1 -0.100538 -0.2779309 0.07685493</p>
+<pre><code>     fit        lwr       upr</code></pre>
+<p>1 -0.0674799 -0.2440822 0.1091224</p>
 <div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="simple-linear-regression.html#cb74-1" tabindex="-1"></a>grid <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb74-2"><a href="simple-linear-regression.html#cb74-2" tabindex="-1"></a>  <span class="at">BASE_CA =</span> <span class="fu">seq</span>(</span>
 <span id="cb74-3"><a href="simple-linear-regression.html#cb74-3" tabindex="-1"></a>    <span class="fu">min</span>(adlb_wide<span class="sc">$</span>BASE_CA, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
