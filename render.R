@@ -1,3 +1,4 @@
+
 cwd <- getwd()
 
 tryCatch({
@@ -13,3 +14,5 @@ tryCatch({
   setwd(cwd)
   browseURL("HandBook/docs/index.html")
 })
+
+

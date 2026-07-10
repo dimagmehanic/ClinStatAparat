@@ -8,7 +8,6 @@ source(here::here("R/init.R"))
 ```
 
 ```{r, echo=FALSE}
-adam <- leer("pharmaverseadam")
 #Dataset prep
 adlb <- adam$adlb() %>% 
   filter(SAFFL == "Y" &  AVISITN==9999 & ANL01FL == "Y" & !(PARAMCD %in% c("COLOR"))) %>%  # nolint
