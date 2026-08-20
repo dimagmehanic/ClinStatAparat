@@ -2,34 +2,43 @@
 # 📊 Descriptive Statistics
 
 ```{r, echo=FALSE, include=FALSE}
-library(here)
 library(ayuda)
-library(ggplot2)
-source(here::here("R/init.R"))
+library(ggplot2) 
+adam <- leer("pharmaverseadam")
 ```
 
 ```{r, echo=FALSE}
-
-adam <- leer("pharmaverseadam")
-
-#Dataset prep
-adlb <- adam$adlb() %>% 
-  filter(SAFFL == "Y" &  AVISITN==9999 & ANL01FL == "Y" & !(PARAMCD %in% c("COLOR"))) %>%  # nolint
-  select(USUBJID, AGE, TRT01P, PARCAT1, PARAM, PARAMCD, PARAMN, AVISIT, AVISITN, AVAL, CHG, BASE) # nolint
-
-UNIQ_PARAMs <- adlb  %>% select(PARCAT1, PARAM, PARAMCD, PARAMN)  %>% unique()
-
-## List unique Parameters
-adlb_wide <- adlb %>%
-  select(USUBJID, AGE, TRT01P, PARAMCD, CHG, BASE, AVAL, AVISIT) %>%
+#ADVS data set prep
+advs  <- adam$advs() %>% filter( SAFFL == "Y" & AVISIT == "Baseline" & DTYPE == "AVERAGE" ) %>% 
+  select(USUBJID, AGE, SEX, TRT01P, PARAM, PARAMCD, AVAL ) %>%
   pivot_wider(
-    id_cols = c(USUBJID, AGE, TRT01P, AVISIT),
+    id_cols = c(USUBJID, AGE, SEX, TRT01P),
     names_from = PARAMCD,
-    values_from = c(AVAL, CHG, BASE)
+    values_from = c(AVAL)
   )
 
-A <- adlb_wide$BASE_CA
-B <- adlb_wide$CHG_CA
+#ADLB data prep
+adlb <- adam$adlb() %>% 
+  filter(SAFFL == "Y" &  AVISITN==9999 & ANL01FL == "Y" & 
+           PARAMCD %in% c("ALB", "ALT", "CA", "CHOLES", "AST", "HGB", "RBC", "WBC", "PH")) %>%  
+  select(USUBJID, AGE, TRT01P, PARAMCD, CHG, BASE, AVAL, AVISIT) %>%
+  pivot_wider(
+    id_cols = c(USUBJID),
+    names_from = PARAMCD,
+    values_from = c(AVAL, BASE)
+  )
+
+anl <- left_join(advs, adlb, by = c("USUBJID")) 
+
+A <-  anl %>%
+  filter(!is.na(AVAL_CA)) %>%
+  pull(AVAL_CA)
+
+B <-  A - na.omit(anl$BASE_CA)
+
+df2print <- function(out, ...) {
+  knitr::kable(out, align = "lr", ...)
+}
 
 ```
 
@@ -275,13 +284,21 @@ It measures the $std$ relative to the mean.
 - Q2: Median (50th percentile)  
 - Q3: 75th percentile  
 
+```{r, echo=FALSE}
+# Function to compute quartiles
+get_quartiles <- function(x, ...) {
+  quantile(x, ...) %>%
+    {data.frame(Percentile = names(.), Value = as.numeric(.))}
+}
+```
+
 <div class="container">
 
   <div class="box">
 
 **Variable A**
   ```{r}
-  get_quartiles(A) %>% df2print() 
+  get_quartiles(A, na.rm=TRUE) %>% df2print() 
   ```
   </div> 
 
@@ -289,7 +306,7 @@ It measures the $std$ relative to the mean.
 
 **Variable B**
   ```{r}
-  get_quartiles(B) %>% df2print()
+  get_quartiles(B, na.rm=TRUE) %>% df2print()
   ```
   </div>
 </div>
@@ -317,7 +334,7 @@ $$
 
 **Variable A**
   ```{r}
-  get_iqr(A) %>% df2print() 
+  get_iqr(A, na.rm=TRUE) %>% df2print() 
   boxplot(A, col = "lightblue", horizontal = TRUE)
   ```
   </div> 
@@ -326,7 +343,7 @@ $$
 
 **Variable B**
   ```{r}
-  get_iqr(B) %>% df2print()
+  get_iqr(B, na.rm=TRUE) %>% df2print()
   boxplot(B, col = "lightblue", horizontal = TRUE)
   ```
   </div>
